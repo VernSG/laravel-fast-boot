@@ -7,13 +7,12 @@
 
 Laravel Fast Boot is a production-ready Visual Studio Code extension that serves as an on-demand wizard to bootstrap and setup fresh Laravel projects immediately after cloning. It streamlines the entire setup process with an intuitive guided workflow.
 
-## 🎥 Video Showcase
+## 🎥 Demo
 
-<video src="/images/showcase.mp4" width="100%" controls>
-    Your browser does not support the video tag. <a href="/images/showcase.mp4">Download the video</a>
-</video>
+[![Watch Demo](/images/icon.png)](https://youtu.be/ydcQflW4R2s?si=odURh4FQB16a3-x8)
 
-*Watch how Laravel Fast Boot streamlines your Laravel project setup in seconds!*
+*Click the image above to watch the full demo video!*
+
 
 ## Features
 
