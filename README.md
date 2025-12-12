@@ -1,7 +1,7 @@
 # Laravel Fast Boot
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/YourPublisher.laravel-fast-boot)](https://marketplace.visualstudio.com/items?itemName=YourPublisher.laravel-fast-boot)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/YourPublisher.laravel-fast-boot)](https://marketplace.visualstudio.com/items?itemName=YourPublisher.laravel-fast-boot)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/MuhammadYusuf.laravel-fast-boot)](https://marketplace.visualstudio.com/items?itemName=MuhammadYusuf.laravel-fast-boot)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/MuhammadYusuf.laravel-fast-boot)](https://marketplace.visualstudio.com/items?itemName=MuhammadYusuf.laravel-fast-boot)
 
 > **Enterprise-grade VS Code extension for bootstrapping Laravel projects with Clean Code and SOLID principles.**
 
