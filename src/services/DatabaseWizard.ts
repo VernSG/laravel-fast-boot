@@ -53,7 +53,7 @@ export class DatabaseWizard {
             }
 
             // Step 6: Get password
-            const password = await this.getPassword();
+            const password = await this.getPassword(connection);
             if (password === undefined) {
                 return undefined;
             }
@@ -81,10 +81,10 @@ export class DatabaseWizard {
      */
     private async selectConnection(): Promise<string | undefined> {
         const options = [
-            { label: 'MySQL', value: 'mysql', description: 'MySQL database' },
-            { label: 'PostgreSQL', value: 'pgsql', description: 'PostgreSQL database' },
-            { label: 'SQLite', value: 'sqlite', description: 'SQLite database (file-based)' },
-            { label: 'SQL Server', value: 'sqlsrv', description: 'Microsoft SQL Server' }
+            { label: 'MySQL', description: 'MySQL database' },
+            { label: 'PostgreSQL', description: 'PostgreSQL database' },
+            { label: 'SQLite', description: 'SQLite database (file-based)' },
+            { label: 'SQL Server', description: 'Microsoft SQL Server' }
         ];
 
         const selected = await vscode.window.showQuickPick(options, {
@@ -92,7 +92,19 @@ export class DatabaseWizard {
             title: 'Database Configuration (1/6)'
         });
 
-        return selected?.value;
+        if (!selected) {
+            return undefined;
+        }
+
+        // Map label to Laravel connection name
+        const connectionMap: { [key: string]: string } = {
+            'MySQL': 'mysql',
+            'PostgreSQL': 'pgsql',
+            'SQLite': 'sqlite',
+            'SQL Server': 'sqlsrv'
+        };
+
+        return connectionMap[selected.label];
     }
 
     /**
@@ -206,7 +218,12 @@ export class DatabaseWizard {
     /**
      * Get database password
      */
-    private async getPassword(): Promise<string | undefined> {
+    private async getPassword(connection: string): Promise<string | undefined> {
+        // SQLite doesn't need a password
+        if (connection === 'sqlite') {
+            return '';
+        }
+
         const password = await vscode.window.showInputBox({
             prompt: 'Enter database password (leave empty if no password)',
             placeHolder: 'password',

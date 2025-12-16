@@ -107,31 +107,61 @@ export class EnvService {
         try {
             let content = await readFileAsync(envPath, 'utf-8');
 
-            // Update database configuration
-            const updates: { [key: string]: string } = {
-                DB_CONNECTION: dbConfig.connection,
-                DB_HOST: dbConfig.host,
-                DB_PORT: dbConfig.port.toString(),
-                DB_DATABASE: dbConfig.database,
-                DB_USERNAME: dbConfig.username,
-                DB_PASSWORD: dbConfig.password
-            };
-
-            // Replace each configuration
-            Object.entries(updates).forEach(([key, value]) => {
-                const regex = new RegExp(`^${key}=.*$`, 'm');
-                const replacement = `${key}=${value}`;
-
-                if (regex.test(content)) {
-                    content = content.replace(regex, replacement);
+            // For SQLite, only set DB_CONNECTION and DB_DATABASE, comment out others
+            if (dbConfig.connection === 'sqlite') {
+                // Update DB_CONNECTION
+                const connectionRegex = new RegExp(`^#?\\s*DB_CONNECTION=.*$`, 'm');
+                if (connectionRegex.test(content)) {
+                    content = content.replace(connectionRegex, 'DB_CONNECTION=sqlite');
                 } else {
-                    // Add if not exists
-                    content += `\n${replacement}`;
+                    content += '\nDB_CONNECTION=sqlite';
                 }
-            });
+
+                // Update DB_DATABASE
+                const databaseRegex = new RegExp(`^#?\\s*DB_DATABASE=.*$`, 'm');
+                if (databaseRegex.test(content)) {
+                    content = content.replace(databaseRegex, `DB_DATABASE=${dbConfig.database}`);
+                } else {
+                    content += `\nDB_DATABASE=${dbConfig.database}`;
+                }
+
+                // Comment out other DB fields
+                ['DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD'].forEach(key => {
+                    const regex = new RegExp(`^(?!#)(${key}=.*)$`, 'm');
+                    if (regex.test(content)) {
+                        content = content.replace(regex, '# $1');
+                    }
+                });
+
+                this.logger.success('SQLite configuration updated in .env');
+            } else {
+                // For other databases, update all fields
+                const updates: { [key: string]: string } = {
+                    DB_CONNECTION: dbConfig.connection,
+                    DB_HOST: dbConfig.host,
+                    DB_PORT: dbConfig.port.toString(),
+                    DB_DATABASE: dbConfig.database,
+                    DB_USERNAME: dbConfig.username,
+                    DB_PASSWORD: dbConfig.password
+                };
+
+                // Uncomment and replace each configuration
+                Object.entries(updates).forEach(([key, value]) => {
+                    const regex = new RegExp(`^#?\\s*${key}=.*$`, 'm');
+                    const replacement = `${key}=${value}`;
+
+                    if (regex.test(content)) {
+                        content = content.replace(regex, replacement);
+                    } else {
+                        // Add if not exists
+                        content += `\n${replacement}`;
+                    }
+                });
+
+                this.logger.success('Database configuration updated in .env');
+            }
 
             await writeFileAsync(envPath, content, 'utf-8');
-            this.logger.success('Database configuration updated in .env');
             return true;
         } catch (error) {
             this.logger.error('Failed to update .env file', error as Error);

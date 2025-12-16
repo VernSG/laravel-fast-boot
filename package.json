@@ -2,7 +2,7 @@
   "name": "laravel-fast-boot",
   "displayName": "Laravel Fast Boot",
   "description": "Bootstrap fresh Laravel projects with a guided setup wizard",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "MuhammadYusuf",
   "icon": "/images/icon.png",
   "license": "MIT",
